@@ -1,6 +1,10 @@
 
 import { useState } from 'react';
-import { StyleSheet, TextInput, View, Button, Text, FlatList, TouchableOpacity, Modal} from 'react-native';
+import { StyleSheet, TextInput, View, ImageBackground } from 'react-native';
+
+import CustomModal from './components/Modal';
+import AddItem from './components/AddItem';
+import List from './components/List';
 
 export default function App() {
 
@@ -9,10 +13,12 @@ export default function App() {
   const [modalVisible, setModalVisible] = useState(false);
   const [itemSelected, setItemSelected] = useState({});
 
+  const image = { uri: 'https://i.ibb.co/zh756NS/Rectangle-2.png'};
+
   const changeItem = (text) => setTextItem(text);
 
   const addItem = () => {
-    setItemList(currentItems => [...currentItems, { id: Date.now(), value: textItem }]);
+    setItemList(currentItems => [...currentItems, { id: Date.now(), value: textItem, completed: false }]);
     setTextItem('')
   }
 
@@ -24,75 +30,55 @@ export default function App() {
   }
 
   const onHandlerModal = (id) => {
-    setItemList(itemList.find(item => item.id == id))
+    setItemSelected(itemList.find(item => item.id == id))
+    setModalVisible(!modalVisible)
+  }
+
+  const onHandlerCompleteItem = (id) => {
+    let itemCompleted = itemList.findIndex((item) => item.id === id)
+    itemList[itemCompleted].completed = true
+    setItemList([...itemList])
     setModalVisible(!modalVisible)
   }
 
   return (
-    <View style={styles.screen}>
-      <Modal
-      animationType='slide'
-      transparent={true}
-      visible={modalVisible}
+      <ImageBackground
+        source={image}
+        resizeMode="cover"
+        style={styles.image}
       >
-        <View style={styles.modalTitle}>
-          <Text>
-            Mi Modal
-          </Text>
-        </View>
-        <View style={styles.modalMessage}>
-          <Text>
-            ¿Estas seguro que deseas borrar?
-          </Text>
-        </View>
-        <View style={styles.Message}>
-          <Text style={styles.Message}>{itemSelected.value}</Text>
-        </View>
-        <View style={styles.modalButton}>
-          <Button onPress={() => onHandlerDeleteItem(itemSelected.id)} title='Confirmar' />
-        </View>
-      </Modal>
-      <View style={styles.inputContainer}>
-        <TextInput placeholder='Ingrese aqui' style={styles.input} value={textItem} onChangeText={changeItem} />
-        <Button title='Add' onPress={addItem} disabled={textItem.length < 1 ? true : false} />
-      </View>
-      <FlatList
-        data={itemList}
-        renderItem={data => (
-          <TouchableOpacity onPress={()=> onHandlerModal(data.item.id)} style={styles.item}>
-              <Text> {data.item.value}</Text>
-          </TouchableOpacity>
-          )}
-          showsVerticalScrollIndicator={false}
-        keyExtractor={item => item.id}
-      />
+    <View style={styles.screen}>
+        <CustomModal
+          modalVisible={modalVisible}
+          onHandlerDeleteItem={onHandlerDeleteItem}
+          itemSelected={itemSelected}
+          onHandlerCompleteItem={onHandlerCompleteItem}
+        />
+        <AddItem
+          textItem={textItem}
+          addItem={addItem}
+          changeItem={changeItem}
+        />
+        <List
+          onHandlerModal={onHandlerModal}
+          itemList={itemList}
+          complete={false}
+        />
     </View>
+      </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
   screen: {
-    padding: 30
+    padding: 30,
+    height: '100%',
+    marginTop: '10%'
   },
-  inputContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  input: {
-    borderBottomColor: "black",
-    borderBottomWidth: 1,
-    width: "80%",
-    height: 50,
-  },
-  item: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "black",
-    borderRadius: 10,
-    marginTop: '10%',
-    height: 50,
-  },
+  image: {
+    height: '100%',
+    width: '100%',
+    flex: 1,
+    justifyContent: "center"
+  }
 });
