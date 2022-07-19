@@ -1,84 +1,38 @@
-
+import { StyleSheet, View } from 'react-native';
+import Colors from './constants/colors'
+import Header from './components/Header';
+import DiaryScreen from './pages/DiaryScreen';
+import StartScreen from './pages/StartScreen';
 import { useState } from 'react';
-import { StyleSheet, TextInput, View, ImageBackground } from 'react-native';
-
-import CustomModal from './components/Modal';
-import AddItem from './components/AddItem';
-import List from './components/List';
+import {useFonts} from 'expo-font'
+import AppLoading from 'expo-app-loading'
 
 export default function App() {
-
-  const [textItem, setTextItem] = useState('');
-  const [itemList, setItemList] = useState([]);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [itemSelected, setItemSelected] = useState({});
-
-  const image = { uri: 'https://i.ibb.co/zh756NS/Rectangle-2.png'};
-
-  const changeItem = (text) => setTextItem(text);
-
-  const addItem = () => {
-    setItemList(currentItems => [...currentItems, { id: Date.now(), value: textItem, completed: false }]);
-    setTextItem('')
+  const [loaded] = useFonts({
+    Indieregular: require('./assets/fonts/IndieFlower-Regular.ttf')
+  })
+  const [selectedDay, setSelectedDay] = useState()
+  const handlerStartdiary = (day) => {
+    setSelectedDay(day)
   }
-
-
-  const onHandlerDeleteItem = (id) => {
-    setItemList(currentItems => currentItems.filter(item => item.id !== id))
-    setItemSelected({})
-    setModalVisible(!modalVisible)
+  let content = <StartScreen onStartDiary = {handlerStartdiary}/>
+  
+  if(selectedDay){
+    content = <DiaryScreen/>
   }
-
-  const onHandlerModal = (id) => {
-    setItemSelected(itemList.find(item => item.id == id))
-    setModalVisible(!modalVisible)
-  }
-
-  const onHandlerCompleteItem = (id) => {
-    let itemCompleted = itemList.findIndex((item) => item.id === id)
-    itemList[itemCompleted].completed = true
-    setItemList([...itemList])
-    setModalVisible(!modalVisible)
-  }
+  if(!loaded) return <AppLoading/>
 
   return (
-      <ImageBackground
-        source={image}
-        resizeMode="cover"
-        style={styles.image}
-      >
-    <View style={styles.screen}>
-        <CustomModal
-          modalVisible={modalVisible}
-          onHandlerDeleteItem={onHandlerDeleteItem}
-          itemSelected={itemSelected}
-          onHandlerCompleteItem={onHandlerCompleteItem}
-        />
-        <AddItem
-          textItem={textItem}
-          addItem={addItem}
-          changeItem={changeItem}
-        />
-        <List
-          onHandlerModal={onHandlerModal}
-          itemList={itemList}
-          complete={false}
-        />
+    <View style={styles.background}>
+      <Header title={"Lista de tareas"} />
+      {content}
     </View>
-      </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: {
-    padding: 30,
-    height: '100%',
-    marginTop: '10%'
-  },
-  image: {
-    height: '100%',
-    width: '100%',
-    flex: 1,
-    justifyContent: "center"
+  background: {
+  backgroundColor: Colors.header,
+  height:'100%'
   }
 });

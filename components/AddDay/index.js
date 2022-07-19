@@ -1,41 +1,32 @@
 import React from 'react'
-import { View, Button, StyleSheet, Text } from 'react-native'
+import { View, Button, Text, StyleSheet } from 'react-native'
 import Card from '../Card'
 import Input from '../Input'
 
+const AddDay = (props) => {
 
-const AddItem = (props) => {
-
-    const { textItem, changeItem, addItem } = props
+    const {addDay, day} = props
 
     return (
         <View>
-            <Text style={styles.title}>¿Qué tienes que hacer hoy?</Text>
+            <Text style={styles.title}>¿Qué día es hoy?</Text>
             <Card style={styles.inputContainer}>
                 <Input
                     placeholder='Ingrese aqui'
                     style={styles.input}
-                    value={textItem}
-                    onChangeText={changeItem}
+                    value={day}
+                    onChangeText={addDay}
                     blurOnSubmit
                     autoCapitalize='none'
                     autoCorrect={false}
-                    maxLenth={20}
+                    maxLenth={6}
                 />
-                {textItem.length > 0 && (
-                    <Button
-                        title='Agregar'
-                        color='#000'
-                        onPress={addItem}
-                    />
-                )}
             </Card>
         </View>
     )
 }
 
-export default AddItem
-
+export default AddDay
 const styles = StyleSheet.create({
     inputContainer: {
         marginTop: 30,
