@@ -32,6 +32,7 @@ const DiaryScreen = () => {
         itemList[itemCompleted].completed = true
         setItemList([...itemList])
         setCompletedItem(!completedItem)
+        setModalVisible(!modalVisible)
     }
 
     return (

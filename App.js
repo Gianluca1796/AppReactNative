@@ -6,6 +6,7 @@ import StartScreen from './pages/StartScreen';
 import { useState } from 'react';
 import {useFonts} from 'expo-font'
 import AppLoading from 'expo-app-loading'
+import IndexNavigation from './navigation/IndexNavigation';
 
 export default function App() {
   const [loaded] = useFonts({
@@ -23,16 +24,10 @@ export default function App() {
   if(!loaded) return <AppLoading/>
 
   return (
-    <View style={styles.background}>
-      <Header title={"Lista de tareas"} />
-      {content}
-    </View>
+    <IndexNavigation />
+    // <View style={styles.background}>
+    //   <Header title={"Lista de tareas"} />
+    //   {content}
+    // </View>
   );
 }
-
-const styles = StyleSheet.create({
-  background: {
-  backgroundColor: Colors.header,
-  height:'100%'
-  }
-});
