@@ -19,7 +19,7 @@ const StartScreen = ({navigation}) => {
                 <Button
                     title='Iniciar'
                     color='#000'
-                    onPress={() => navigation.navigate('Agenda')}
+                    onPress={() => navigation.navigate('Agenda', {day : day})}
                     style={styles.button}
                 />
             )}

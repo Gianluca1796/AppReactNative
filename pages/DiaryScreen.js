@@ -21,12 +21,12 @@ const DiaryScreen = () => {
         setItemList(currentItems => currentItems.filter(item => item.id !== id))
         setItemSelected({})
         setModalVisible(!modalVisible)
-        setCompletedItem(!completedItem)
     }
     const onHandlerModal = (id) => {
         setItemSelected(itemList.find(item => item.id == id))
         setModalVisible(!modalVisible)
     }
+    
     const onHandlerCompleteItem = (id) => {
         let itemCompleted = itemList.findIndex((item) => item.id === id)
         itemList[itemCompleted].completed = true
